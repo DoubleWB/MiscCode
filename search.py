@@ -157,12 +157,45 @@ def recursiveBreadthFirst(queue, visited, problem):
 	  
 def uniformCostSearch(problem):
   "Search the node of least total cost first. "
-  visited = []
+  visited = []#initialize all three lists
   stack = []
-  stack.append((problem.getStartState(),'',0))
-  visited.append(problem.getStartState())
+  path = []
+  stack.append((problem.getStartState(),'',0))#prime the loop with the first position
+  while(stack):
+    currentNode = stack[len(stack)-1]#gets current node off of the end of the stack
+    visited.append(currentNode[0])#adds current node to visited list
+    if(len(visited)!=1):
+      path.append(currentNode[1])#add to path only if not first position (you don't need to move to get to the first position
+    if(problem.isGoalState(currentNode[0])):#return if the solution is found
+      print path
+      return path
+    failCount = 0
+    for node in problem.getSuccessors(currentNode[0]):
+      if(node[0] in visited):
+        failCount+=1
+    if(failCount == len(problem.getSuccessors(currentNode[0]))):#if every successor is visited ***NOT WORKING***
+       path.pop()#remove this last direction from the path, as it is not part of the correct answer ***NOT WORKING***
+       stack.pop()#remove node from stack ***NOT WORKING***
+       print('GOT HERE')
+       continue# go to next node ***NOT WORKING***
+    print 'GOT PAST HERE'
+    paths = {}
+    for node in problem.getSuccessors(currentNode[0]):
+      if(node[0] not in visited):
+        testPath = path[:]
+        testPath.append(node[1])
+        paths[problem.getCostOfActions(testPath)] = node
+        orderByCost(stack, paths)#add nodes in decreasing order(check cheapest paths first)
+  return []#if nothing found, return empty list
 
-  return recursiveUniformCost(stack, visited, append
+def orderByCost(stack, paths):
+  while(paths):
+    highest = 0
+    for key in paths.keys():
+       if(key>highest):
+         highest = key
+    stack.append(paths[highest])
+    del paths[key]
 
 def nullHeuristic(state, problem=None):
   """
