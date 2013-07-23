@@ -86,26 +86,26 @@ def depthFirstSearch(problem):
   """
   #util.raiseNotDefined()
 
-  stack = []
-  visited = []
-  stack.append((problem.getStartState(),'',0))
+  stack = [] # initialize stack
+  visited = [] # initialize visited
+  stack.append((problem.getStartState(),'',0)) # Starts both visited and stack with start node
   visited.append(problem.getStartState())
 
-  return recursiveDepthFirst(stack, visited,problem)
+  return recursiveDepthFirst(stack, visited,problem) 
 
 def recursiveDepthFirst(stack, visited, problem):
-  currentNode = stack.pop()
+  currentNode = stack.pop() #gets node off of stack
   if(problem.isGoalState(currentNode[0])):
-     return []
+     return [] # goal reached
   else:
      successors = problem.getSuccessors(currentNode[0])
      for node in successors:
        if(node[0] not in visited):
          stack.append(node)
          visited.append(node[0])
-         bestPath = recursiveDepthFirst(stack, visited, problem)
-         if(bestPath != None):
-           bestPath.insert(0,node[1])
+         bestPath = recursiveDepthFirst(stack, visited, problem) # If a node is adjacent and unvisited, add to visited and stack, as well as set a variable, bestPath, to the next recursion
+         if(bestPath != None): # If the goal is not reached, bestPath will be none, and no action will be taken. Otherwise, starts a backtrace of the calls to the goal node, thus building the path required
+           bestPath.insert(0,node[1]) #Backtrace
            return bestPath
 
 
@@ -121,6 +121,7 @@ def breadthFirstSearch(problem):
 
   return recursiveBreadthFirst(queue, visited, problem)
   
+  #both BreadthFirst and DepthFirst produce the same output, because the stack is the same as the queue, because they only have one item in them at a time. The below is my failed attempt to fix it, ignore for the meantime
   """pathDirs = []
   comparisonNode = path.pop
   pathDirs.insert(0,(comparisonNode[1]))

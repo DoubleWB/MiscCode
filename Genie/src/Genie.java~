@@ -3,7 +3,7 @@
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class Genie { // Because I am lazy I do not want to re-comment this code, it is the same, basically, as the Genie.py, which is commented. Look at that for clarification.
+public class Genie { // Because I am lazy I do not want to re-comment this code, it is the same, basically, as the Genie.py, which is commented. Look at that for clarification
 
 	private static Dictionary dict = new Dictionary();
 
