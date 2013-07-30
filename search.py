@@ -68,7 +68,7 @@ def tinyMazeSearch(problem):
   from game import Directions
   s = Directions.SOUTH
   w = Directions.WEST
-  return  [s,s,w,s,w,w,s,w]
+  return  [s, s, w, s, w, w, s, w]
 
 def depthFirstSearch(problem):
   """
@@ -84,44 +84,43 @@ def depthFirstSearch(problem):
   print "Is the start a goal?", problem.isGoalState(problem.getStartState())
   print "Start's successors:", problem.getSuccessors(problem.getStartState())
   """
-  #util.raiseNotDefined()
+  # util.raiseNotDefined()
 
-  stack = [] # initialize stack
-  visited = [] # initialize visited
-  stack.append((problem.getStartState(),'',0)) # Starts both visited and stack with start node
+  stack = []
+  visited = []
+  stack.append((problem.getStartState(), '', 0))
   visited.append(problem.getStartState())
 
-  return recursiveDepthFirst(stack, visited,problem) 
+  return recursiveDepthFirst(stack, visited, problem)
 
 def recursiveDepthFirst(stack, visited, problem):
-  currentNode = stack.pop() #gets node off of stack
+  currentNode = stack.pop()
   if(problem.isGoalState(currentNode[0])):
-     return [] # goal reached
+     return []
   else:
      successors = problem.getSuccessors(currentNode[0])
      for node in successors:
        if(node[0] not in visited):
          stack.append(node)
          visited.append(node[0])
-         bestPath = recursiveDepthFirst(stack, visited, problem) # If a node is adjacent and unvisited, add to visited and stack, as well as set a variable, bestPath, to the next recursion
-         if(bestPath != None): # If the goal is not reached, bestPath will be none, and no action will be taken. Otherwise, starts a backtrace of the calls to the goal node, thus building the path required
-           bestPath.insert(0,node[1]) #Backtrace
+         bestPath = recursiveDepthFirst(stack, visited, problem)
+         if(bestPath != None):
+           bestPath.insert(0, node[1])
            return bestPath
 
 
 def breadthFirstSearch(problem):
   "Search the shallowest nodes in the search tree first. [p 81]"
   "*** YOUR CODE HERE ***"
-  #util.raiseNotDefined()
+  # util.raiseNotDefined()
   from collections import deque
-  queue = deque([(problem.getStartState(),'',0)])
+  queue = deque([(problem.getStartState(), '', 0)])
   visited = []
   visited.append(problem.getStartState())
   sequence = []
 
   return recursiveBreadthFirst(queue, visited, problem)
   
-  #both BreadthFirst and DepthFirst produce the same output, because the stack is the same as the queue, because they only have one item in them at a time. The below is my failed attempt to fix it, ignore for the meantime
   """pathDirs = []
   comparisonNode = path.pop
   pathDirs.insert(0,(comparisonNode[1]))
@@ -151,48 +150,119 @@ def recursiveBreadthFirst(queue, visited, problem):
         visited.append(node[0])
         bestPath = recursiveBreadthFirst(queue, visited, problem)
         if(bestPath != None):
-         bestPath.insert(0,node[1])
+         bestPath.insert(0, node[1])
          return bestPath
     
-	  
+def uniformCostSearch(problem):
+    currentNode = (problem.getStartState(), [])
+    frontier = {}
+    frontier[0] = currentNode
+    visited = []
+    while(frontier):
+        print len(frontier)
+        print 'element(s) left'
+        lowest = min(frontier.keys())
+        print 'lowest directly below'
+        print frontier[lowest] 
+        print ' =================='
+        currentNode = frontier.pop(lowest)
+        if(problem.isGoalState(currentNode[0])):
+            print "Goal Reached"
+            print ' =================='
+            return currentNode[1]
+        visited.append(currentNode[0])
+        print "working with node:"
+        print currentNode[0]
+        print 'with children:'
+        print problem.getSuccessors(currentNode[0])
+        print ' =================='
+        for child in problem.getSuccessors(currentNode[0]):
+            node = (child[0], [child [1]])
+            if(node[0] in visited):
+                print 'Failed with node:'
+                print node
+                print 'and duplicate'
+                print visited[visited.index(node[0])]
+            if(node[0] not in visited):
+                path = currentNode[1]
+                path = path + node[1]
+                # print 'path directly below'
+                # print currentNode[1]
+                # print path
+                # print ' =================='
+                if(any(problem.getCostOfActions(path) == k for k in frontier.iterkeys())):
+                    frontier[problem.getCostOfActions(path) + .0000001] = (node[0], path)
+                    print "*** FOUND SAME COST, ARTIFICIALLY ALTERING COST"
+                else:
+                    frontier[problem.getCostOfActions(path)] = (node[0], path)
+                print 'path cost directly below'
+                print problem.getCostOfActions(path)
+                print ' =================='
+                print 'added to frontier, directly below'
+                print node
+                print ' =================='
+            '''if((any(node[0] == v[0] for v in frontier.itervalues())) and next((k for k, v in frontier.iteritems() if node[0] == v[0]), None) > problem.getCostOfActions(currentNode[1] + (node[1]))):
+                print "REPLACING"
+                print frontier[next((k for k, v in frontier.iteritems() if node[0] == v[0]), None)]
+                print "with"
+                print node
+                del frontier[next((k for k, v in frontier.iteritems() if node[0] == v[0]), None)]
+                path = currentNode[1] + (node[1])
+                #print 'path directly below'
+                #print path
+                #print ' =================='
+                print 'path cost directly below'
+                print problem.getCostOfActions(path)
+                print ' =================='
+                frontier[problem.getCostOfActions(path)] = (node[0], path)
+                print 'replaced in frontier, directly below'
+                print node
+                print ' ==================' '''
+        print frontier
+    print 'FAIL returning best guess'
+    return currentNode[1]
+                
+"""	  
 def uniformCostSearch(problem):
   "Search the node of least total cost first. "
-  visited = []#initialize all three lists
+  visited = []
   stack = []
   path = []
-  stack.append((problem.getStartState(),'',0))#prime the loop with the first position
+  stack.append((problem.getStartState(),'',0))
   while(stack):
-    currentNode = stack[len(stack)-1]#gets current node off of the end of the stack
-    visited.append(currentNode[0])#adds current node to visited list
+    currentNode = stack[len(stack)-1]
+    visited.append(currentNode[0])
     if(len(visited)!=1):
-      path.append(currentNode[1])#add to path only if not first position (you don't need to move to get to the first position
-    if(problem.isGoalState(currentNode[0])):#return if the solution is found
+      path.append(currentNode[1])
+    if(problem.isGoalState(currentNode[0])):
       print path
       return path
     failCount = 0
     for node in problem.getSuccessors(currentNode[0]):
       if(node[0] in visited):
         failCount+=1
-    if(failCount == len(problem.getSuccessors(currentNode[0]))):#if every successor is visited ***NOT WORKING***
-       path.pop()#remove this last direction from the path, as it is not part of the correct answer ***NOT WORKING***
-       stack.pop()#remove node from stack ***NOT WORKING***
+    if(failCount == len(problem.getSuccessors(currentNode[0]))):
+       path.pop()
+       stack.pop()
        print('GOT HERE')
-       continue# go to next node ***NOT WORKING***
+       continue
     print 'GOT PAST HERE'
     paths = {}
     for node in problem.getSuccessors(currentNode[0]):
       if(node[0] not in visited):
         testPath = path[:]
         testPath.append(node[1])
+        print problem.getCostOfActions(testPath)
         paths[problem.getCostOfActions(testPath)] = node
-        orderByCost(stack, paths)#add nodes in decreasing order(check cheapest paths first)
-  return []#if nothing found, return empty list
+        orderByCost(stack, paths)
+  return []
+"""    
 
 def orderByCost(stack, paths):
   while(paths):
     highest = 0
     for key in paths.keys():
-       if(key>highest):
+       if(key > highest):
          highest = key
     stack.append(paths[highest])
     del paths[key]
@@ -207,7 +277,73 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem, heuristic=nullHeuristic):
   "Search the node that has the lowest combined cost and heuristic first."
   "*** YOUR CODE HERE ***"
-  util.raiseNotDefined()
+  currentNode = (problem.getStartState(), [])
+  frontier = {}
+  frontier[0] = currentNode
+  visited = []
+  while(frontier):
+        print len(frontier)
+        print 'element(s) left'
+        lowest = min(frontier.keys())
+        print 'lowest directly below'
+        print frontier[lowest] 
+        print ' =================='
+        currentNode = frontier.pop(lowest)
+        if(problem.isGoalState(currentNode[0])):
+            print "Goal Reached"
+            print ' =================='
+            return currentNode[1]
+        visited.append(currentNode[0])
+        print "working with node:"
+        print currentNode[0]
+        print 'with children:'
+        print problem.getSuccessors(currentNode[0])
+        print ' =================='
+        for child in problem.getSuccessors(currentNode[0]):
+            node = (child[0], [child [1]])
+            if(node[0] in visited):
+                print 'Failed with node:'
+                print node
+                print 'and duplicate'
+                print visited[visited.index(node[0])]
+            if(node[0] not in visited):
+                path = currentNode[1]
+                path = path + node[1]
+                # print 'path directly below'
+                # print currentNode[1]
+                # print path
+                # print ' =================='
+                if(any(problem.getCostOfActions(path) == k for k in frontier.iterkeys())):
+                    frontier[problem.getCostOfActions(path) + 1] = (node[0], path)
+                    print "*** FOUND SAME COST, ARTIFICIALLY ALTERING COST"
+                else:
+                    frontier[problem.getCostOfActions(path)] = (node[0], path)
+                print 'path cost directly below'
+                print problem.getCostOfActions(path)
+                print ' =================='
+                print 'added to frontier, directly below'
+                print node
+                print ' =================='
+            '''if((any(node[0] == v[0] for v in frontier.itervalues())) and next((k for k, v in frontier.iteritems() if node[0] == v[0]), None) > problem.getCostOfActions(currentNode[1] + (node[1]))):
+                print "REPLACING"
+                print frontier[next((k for k, v in frontier.iteritems() if node[0] == v[0]), None)]
+                print "with"
+                print node
+                del frontier[next((k for k, v in frontier.iteritems() if node[0] == v[0]), None)]
+                path = currentNode[1] + (node[1])
+                #print 'path directly below'
+                #print path
+                #print ' =================='
+                print 'path cost directly below'
+                print problem.getCostOfActions(path)
+                print ' =================='
+                frontier[problem.getCostOfActions(path)] = (node[0], path)
+                print 'replaced in frontier, directly below'
+                print node
+                print ' ==================' '''
+        print frontier
+  print 'FAIL returning best guess'
+  return currentNode[1]
 	
   
 # Abbreviations
