@@ -220,43 +220,7 @@ def uniformCostSearch(problem):
                 print ' ==================' '''
         print frontier
     print 'FAIL returning best guess'
-    return currentNode[1]
-                
-"""	  
-def uniformCostSearch(problem):
-  "Search the node of least total cost first. "
-  visited = []
-  stack = []
-  path = []
-  stack.append((problem.getStartState(),'',0))
-  while(stack):
-    currentNode = stack[len(stack)-1]
-    visited.append(currentNode[0])
-    if(len(visited)!=1):
-      path.append(currentNode[1])
-    if(problem.isGoalState(currentNode[0])):
-      print path
-      return path
-    failCount = 0
-    for node in problem.getSuccessors(currentNode[0]):
-      if(node[0] in visited):
-        failCount+=1
-    if(failCount == len(problem.getSuccessors(currentNode[0]))):
-       path.pop()
-       stack.pop()
-       print('GOT HERE')
-       continue
-    print 'GOT PAST HERE'
-    paths = {}
-    for node in problem.getSuccessors(currentNode[0]):
-      if(node[0] not in visited):
-        testPath = path[:]
-        testPath.append(node[1])
-        print problem.getCostOfActions(testPath)
-        paths[problem.getCostOfActions(testPath)] = node
-        orderByCost(stack, paths)
-  return []
-"""    
+    return currentNode[1] 
 
 def orderByCost(stack, paths):
   while(paths):
@@ -274,12 +238,12 @@ def nullHeuristic(state, problem=None):
   """
   return 0
 
-def aStarSearch(problem, heuristic=nullHeuristic):
+'''def aStarSearch(problem, heuristic=nullHeuristic):
   "Search the node that has the lowest combined cost and heuristic first."
   "*** YOUR CODE HERE ***"
   currentNode = (problem.getStartState(), [])
   frontier = {}
-  frontier[0] = currentNode
+  frontier[0 + heuristic(currentNode[0], problem)] = currentNode
   visited = []
   while(frontier):
         print len(frontier)
@@ -301,51 +265,109 @@ def aStarSearch(problem, heuristic=nullHeuristic):
         print ' =================='
         for child in problem.getSuccessors(currentNode[0]):
             node = (child[0], [child [1]])
+            path = currentNode[1]
+            path = path + node[1]
+            score = problem.getCostOfActions(path)
             if(node[0] in visited):
                 print 'Failed with node:'
-                print node
+                print node[0]
                 print 'and duplicate'
                 print visited[visited.index(node[0])]
-            if(node[0] not in visited):
-                path = currentNode[1]
-                path = path + node[1]
-                # print 'path directly below'
-                # print currentNode[1]
-                # print path
-                # print ' =================='
-                if(any(problem.getCostOfActions(path) == k for k in frontier.iterkeys())):
-                    frontier[problem.getCostOfActions(path) + 1] = (node[0], path)
+            if(node[0] in visited and score >= next((k for k, v in frontier.iteritems() if node[0] == v[0]), None)):
+                continue
+            if(not(any(node[0] == v[0] for v in frontier.itervalues()))):
+                if(any(problem.getCostOfActions(path) + heuristic(node[0], problem) == k for k in frontier.iterkeys())):
+                    frontier[problem.getCostOfActions(path) + heuristic(node[0], problem) + .0000001] = (node[0], path)
                     print "*** FOUND SAME COST, ARTIFICIALLY ALTERING COST"
-                else:
-                    frontier[problem.getCostOfActions(path)] = (node[0], path)
-                print 'path cost directly below'
-                print problem.getCostOfActions(path)
-                print ' =================='
                 print 'added to frontier, directly below'
-                print node
+                print node[0]
                 print ' =================='
-            '''if((any(node[0] == v[0] for v in frontier.itervalues())) and next((k for k, v in frontier.iteritems() if node[0] == v[0]), None) > problem.getCostOfActions(currentNode[1] + (node[1]))):
+                frontier[score + heuristic(node[0], problem)] = (node[0], path)
+            """if((any(node[0] == v[0] for v in frontier.itervalues())) and score < next((k for k, v in frontier.iteritems() if node[0] == v[0]), None)):
                 print "REPLACING"
                 print frontier[next((k for k, v in frontier.iteritems() if node[0] == v[0]), None)]
                 print "with"
-                print node
+                print node[0]
+                print ' =================='
                 del frontier[next((k for k, v in frontier.iteritems() if node[0] == v[0]), None)]
                 path = currentNode[1] + (node[1])
-                #print 'path directly below'
-                #print path
-                #print ' =================='
-                print 'path cost directly below'
-                print problem.getCostOfActions(path)
-                print ' =================='
-                frontier[problem.getCostOfActions(path)] = (node[0], path)
-                print 'replaced in frontier, directly below'
-                print node
-                print ' ==================' '''
+                frontier[score + heuristic(node[0], problem)] = (node[0], path)"""
+        print 'Current Frontier'
         print frontier
-  print 'FAIL returning best guess'
-  return currentNode[1]
-	
-  
+        print ' =================='
+  print 'FAILURE'
+  return currentNode[1]'''
+
+def aStarSearch(problem, heuristic=nullHeuristic):
+    "Search the node that has the lowest combined cost and heuristic first."
+    "*** YOUR CODE HERE ***"
+    current = (problem.getStartState(), '',0)
+    closedSet = []
+    openSet = [current]
+    cameFrom = {}
+    g_score = {}
+    f_score = {}
+    g_score[current[0]] = 0
+    f_score[current[0]] = g_score[current[0]]+heuristic(current[0], problem)
+    while(openSet):
+        print 'OPEN SET SIZE'
+        print len(openSet)
+        lowestIndex = getLowestElement(openSet, f_score)
+        current = openSet.pop(lowestIndex)
+        print 'Working with'
+        print current
+        print "=============="
+        if(problem.isGoalState(current[0])):
+            print 'goal reached'
+            return pathify(reconstructPath(cameFrom, current))
+        closedSet.append(current[0])
+        for node in problem.getSuccessors(current[0]):
+            tentativeGScore = g_score[current[0]] + problem.getCostOfActions([node[1]])
+            if(node[0] in closedSet and tentativeGScore>= g_score[node[0]]):
+                print 'not Added:'
+                print node
+                print '=============='
+                continue
+            if(node not in openSet or tentativeGScore < g_score[node[0]]):
+                print 'Added'
+                print node
+                print '=============='
+                cameFrom[node] = current
+                g_score[node[0]] = tentativeGScore
+                f_score[node[0]] = g_score[node[0]]+heuristic(node[0],problem)
+                if(node not in openSet):
+                    openSet.append(node)
+    print 'failure'
+    return pathify(reconstructPath(cameFrom, current))
+
+def reconstructPath(came_from, current):
+    if(current in came_from):
+        p = reconstructPath(came_from, came_from[current])
+        return p + current
+    else:
+        return current
+    
+def pathify(list):
+    newList = []
+    for node in list:
+        if(node == 'East' or node == 'West' or node == 'North' or node == 'South'):
+            newList.append(node)
+    print "NEW LIST"
+    print newList
+    print "===================="
+    return newList
+    """newList = newList+[node[1]]
+    return filter(lambda a: a != '', newList)"""
+
+def getLowestElement(list, f_score):
+    lowest = f_score[(list[0])[0]]
+    lowestK = 0
+    for v in list:
+        if(f_score[v[0]]<lowest):
+            lowest = f_score[v[0]]
+            lowestK = list.index(v)
+    print lowest
+    return lowestK
 # Abbreviations
 bfs = breadthFirstSearch
 dfs = depthFirstSearch
