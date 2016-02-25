@@ -1120,3 +1120,5 @@
             (on-key press)
             (on-release release)
             (stop-when game-over?)))
+
+(main 20 40 60)
