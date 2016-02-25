@@ -1,0 +1,161 @@
+Design.txt
+==========
+
+Since our game consists of Froggys and not Fishys, we have the Frog class.
+	A Frog has a sprite, a scale for that sprite, a velocity in the x and y direction, and a position.
+
+Because a player is just a unique Frog, we extend the Frog class through the PlayerFrog class
+	This class implements behaviors of a Frog as well as characteristics and behaviors
+	unique to a PlayerFrog, such as growing (when it eats a Frog)
+
+We have a list representation for Frogs consisting of the interface ILoFrog,
+the MtLoFrog class (to represent an empty list), and the ConsLoFrog class (to represent a non-empty list)
+We needed a list of Frogs data structure in order to represent multiple enemy Frogs on the screen.
+
+The FrogWorld class extends the World class in order to implement our Frog specific behavior into the World (big-bang) program,
+ such as drawing Frogs and making and destroying Frogs.
+
+We also have a Util class in order to store constant values such as the world size and default size of a Frog
+ in one place. This way our code is more robust to later changes.
+
+Class Hierarchy
+===============
+
+ILoFrog
+	ILoFrog filterOffScreen()
+	ILoFrog moveAllFrogs()
+	boolean shouldEat(PlayerFrog player)
+	WorldScene drawOnto(WorldScene acc)
+	ILoFrog addRandomFrogs(int toAdd)
+	int length()
+	PlayerFrog feed(PlayerFrog player)
+	ILoFrog kill(PlayerFrog player)
+	
+	ConsLoFrog extends ILoFrog
+
+		Frog first
+		ILoFrog rest
+
+		ILoFrog filterOffScreen()
+		ILoFrog moveAllFrogs()
+		boolean shouldEat(PlayerFrog player)
+		WorldScene drawOnto(WorldScene acc)
+		ILoFrog addRandomFrogs(int toAdd)
+		int length()
+		PlayerFrog feed(PlayerFrog player)
+		ILoFrog kill(PlayerFrog player)
+
+	MtLoFrog extends ILoFrog
+		
+		ILoFrog filterOffScreen()
+		ILoFrog moveAllFrogs()
+		boolean shouldEat(PlayerFrog player)
+		WorldScene drawOnto(WorldScene acc)
+		ILoFrog addRandomFrogs(int toAdd)
+		int length()
+		PlayerFrog feed(PlayerFrog player)
+		ILoFrog kill(PlayerFrog player)
+
+Frog
+	
+	WorldImage sprite
+	double scale
+	int velX
+	int velY
+	Posn pos
+
+	double getScale()
+	Frog becomeRandom()
+	WorldImage getSprite()
+	int getPosX()
+	int getPosY()
+	int getVelX()
+	int getVelY()
+	Posn getPos()
+	Frog advanceFrog()
+	boolean isOffScreen()
+
+	PlayerFrog extends Frog
+
+		double getScale()
+		Frog becomeRandom()
+		WorldImage getSprite()
+		int getPosX()
+		int getPosY()
+		int getVelX()
+		int getVelY()
+		Posn getPos()
+		PlayerFrog advanceFrog()
+		boolean isOffScreen()
+
+		boolean overlaps(Frog that)
+		PlayerFrog grow()
+		WorldScene drawOnto(WorldScene acc)
+
+World
+	
+	FrogWorld extends World
+
+		PlayerFrog player;
+		ILoFrog enemyFrogs;
+		WorldScene background;
+		WorldScene lossScreen;
+		WorldScene winScreen;
+
+		FrogWorld(PlayerFrog player, ILoFrog enemyFrogs)
+		WorldScene makeScene()    
+		World onMousePressed(Posn pos)
+		World onTick()    
+		WorldScene lastScene(String message)
+		WorldEnd worldEnds()
+
+Util
+	int getConstantBound()
+	int getDefaultSize()
+
+
+Class Diagram
+=============
+                                                                                                                                                                               +----------------------+
+                                                                                                                      +-------+                                    +---------->+Frog                  |
+                                                                                                                      | World |                                    |           +----------------------+
+                                                                                                                      +-------+                                    |           |WorldImage sprite     |
+                                                                                                                         / \                                       |           |double scale          |
+                                                                                                                         ---                                       |           |int velX              |
+                                                                                                                          |                                        |           |int velY              |
+                                                                                                    +------------------------------------------------+             |           |Posn pos              |
+                          +------------------------------------+                                    |FrogWorld                                       |             |           +----------------------+
+                          |ILoFrog                             +<--------------------------+        +------------------------------------------------+             |           |double getScale()     |
+                          +------------------------------------+                           |        |PlayerFrog player;                              +---------+   |           |Frog becomeRandom()   |
+                          +------------------------------------+                           +<-------+ILoFrog enemyFrogs;                             |         |   |           |WorldImage getSprite()|            +----------------------+
+                          |ILoFrog filterOffScreen()           |                           |        |WorldScene background;                          |         |   |           |int getPosX()         |            |Util                  |
+                          |ILoFrog moveAllFrogs()              |                           |        |WorldScene lossScreen;                          |         |   |           |int getPosY()         |            +----------------------+
+                          |boolean shouldEat(PlayerFrog player)|                           |        |WorldScene winScreen;                           |         |   |           |int getVelX()         |            +----------------------+
+                          |WorldScene drawOnto(WorldScene acc) |                           |        +------------------------------------------------+         |   |           |int getVelY()         |            |int getConstantBound()|
+                          |ILoFrog addRandomFrogs(int toAdd)   |                           |        |FrogWorld(PlayerFrog player, ILoFrog enemyFrogs)|         |   |           |Posn getPos()         |            |int getDefaultSize()  |
+                          |int length()                        |                           |        |WorldScene makeScene()                          |         |   |           |Frog advanceFrog()    |            +----------------------+
+                          |PlayerFrog feed(PlayerFrog player)  |                           |        |World onMousePressed(Posn pos)                  |         |   |           |boolean isOffScreen() |
+                          |ILoFrog kill(PlayerFrog player)     |                           |        |World onTick()                                  |         |   |           +----------------------+
+                          +------------------------------------+                           |        |WorldScene lastScene(String message)            |         |   |                    / \
+                                           / \                                             |        |WorldEnd worldEnds()                            |         |   |                    ---
+                                           ---                                             |        +------------------------------------------------+         |   |                     |
+                                            |                                              |                                                                   |   |                     |
+                                                                                           |                                                                   |   |                     |
+                                            |                                              |                                                                   |   |     +------------------------------------+
+                    +------------------------------------------------+                     |                                                                   ++------->+ PlayerFrog                         |
+                    |                                                |                     |                                                                    |  |     +------------------------------------+
++-------------------+----------------+            +------------------+-----------------+   |                                                                    |  |     | double getScale()                  |
+|MtLoFrog                            |            |ConsLoFrog                          |   |                                                                    |  +-----+ Frog becomeRandom()                |
++------------------------------------+            +------------------------------------+   |                                                                    |        | WorldImage getSprite()             |
++------------------------------------+            |Frog first                          |   |                                                                    |        | int getPosX()                      |
+|ILoFrog filterOffScreen()           |            |ILoFrog rest                        +---+                                                                    |        | int getPosY()                      |
+|ILoFrog moveAllFrogs()              |            +------------------------------------+                                                                        |        | int getVelX()                      |
+|boolean shouldEat(PlayerFrog player)|            |ILoFrog filterOffScreen()           |                                                                        |        | int getVelY()                      |
+|WorldScene drawOnto(WorldScene acc) |            |ILoFrog moveAllFrogs()              |                                                                        |        | Posn getPos()                      |
+|ILoFrog addRandomFrogs(int toAdd)   |            |boolean shouldEat(PlayerFrog player)|                                                                        +--------+ PlayerFrog advanceFrog()           |
+|int length()                        |            |WorldScene drawOnto(WorldScene acc) |                                                                                 | boolean isOffScreen()              |
+|PlayerFrog feed(PlayerFrog player)  |            |ILoFrog addRandomFrogs(int toAdd)   |                                                                                 | boolean overlaps(Frog that)        |
+|ILoFrog kill(PlayerFrog player)     |            |int length()                        |                                                                                 | PlayerFrog grow()                  |
++------------------------------------+            |PlayerFrog feed(PlayerFrog player)  |                                                                                 | WorldScene drawOnto(WorldScene acc)|
+                                                  |ILoFrog kill(PlayerFrog player)     |                                                                                 +------------------------------------+ 
+                                                  +------------------------------------+                                                                                 
