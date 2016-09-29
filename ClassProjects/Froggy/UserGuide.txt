@@ -1,0 +1,24 @@
+UserGuide.txt
+-------------
+
+You assume the body of a young frog named Pepe.
+
+The object of the game is to eat all other frogs
+on the screen without being eaten.
+
+If Pepe is bigger than another frog, he will eat it,
+otherwise, he will be eaten himself and the game will end.
+
+Once Pepe becomes the largest frog in the swamp, the game ends in
+victory.
+
+
+Control Pepe by clicking the location you wish him to travel to.
+
+The further away from Pepe you click, the faster he will travel.
+
+If Pepe goes to the left or right boundary, he will appear on the other side.
+
+If Pepe goes to the top or bottom boundary, he will stop at that boundary.
+
+Good luck!
