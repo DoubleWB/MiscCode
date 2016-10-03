@@ -1,0 +1,7 @@
+set(_CATKIN_CURRENT_PACKAGE "basic_teleop")
+set(basic_teleop_MAINTAINER "pi <pi@todo.todo>")
+set(basic_teleop_DEPRECATED "")
+set(basic_teleop_VERSION "0.0.0")
+set(basic_teleop_BUILD_DEPENDS "message_generation" "roscpp" "rospy" "std_msgs")
+set(basic_teleop_RUN_DEPENDS "message_generation" "message_runtime" "roscpp" "rospy" "std_msgs")
+set(basic_teleop_BUILDTOOL_DEPENDS "catkin")

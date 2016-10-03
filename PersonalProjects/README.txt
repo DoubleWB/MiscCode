@@ -13,3 +13,8 @@ Learning is a proof of concept for an AI self balancing robot - but this proof o
 Currently the program acts as a algorithmical trial and error behavior learner. The next step is to try and improve guessing new behaviors, which I will try to also
 get working with the same encapsulation from the stimulus that the trial and error does - by grouping similar stimuli by what behaviors work well on them. There are currently
 wild bad casting issues, which are being ignored right now as the final form of this project will either be in python or c++, and not have such inheritance problems.
+
+catkin_ws is a catkin project containing a simple teleoperation for a Rasperry Pi based robot in ROS. Used to gain familiarity with the ROS framework. Contains two nodes
+written in python, one to be used on a base computer (keyop.py), the other to listen to the commands published over the Move topic, and to be run on the robot (teleop.py)
+Although it is functional, a more diverse command set would be desired in the future, and an input method that doesn't destroy the tty of the keyop node terminal. Currently
+on hiatus because of hardware difficulties.
