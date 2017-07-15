@@ -1,8 +1,0 @@
-prefix=/home/will/catkin_ws/install
-
-Name: basic_teleop
-Description: Description of basic_teleop
-Version: 0.0.0
-Cflags: -I/home/will/catkin_ws/install/include
-Libs: -L/home/will/catkin_ws/install/lib -lbasic_teleop
-Requires: roscpp rospy std_msgs message_runtime
