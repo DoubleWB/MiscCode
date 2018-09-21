@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+<fullyQualifiedTypeName name="java.awt.List"/>
+<fullyQualifiedTypeName name="java.lang.System"/>
+<fullyQualifiedTypeName name="java.util.HashMap"/>
+<fullyQualifiedTypeName name="java.lang.Math"/>
+<fullyQualifiedTypeName name="java.util.Set"/>
+<fullyQualifiedTypeName name="java.util.PriorityQueue"/>
+<fullyQualifiedTypeName name="main.Point2d"/>
+<fullyQualifiedTypeName name="learning.PathGenerator"/>
+<fullyQualifiedTypeName name="main.Util"/>
+<fullyQualifiedTypeName name="main.SimpleTransitionModel"/>
+<fullyQualifiedTypeName name="main.SimpleEmissionModel"/>
+<fullyQualifiedTypeName name="learning.KnownLearner"/>
+<fullyQualifiedTypeName name="learning.UnknownLearner"/>
+<fullyQualifiedTypeName name="java.util.ArrayList"/>
+</qualifiedTypeNameHistroy>

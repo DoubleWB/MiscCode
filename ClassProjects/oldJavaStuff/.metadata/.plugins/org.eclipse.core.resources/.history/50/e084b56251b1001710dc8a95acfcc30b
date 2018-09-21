@@ -1,0 +1,24 @@
+package resources;
+
+import java.awt.image.BufferedImage;
+
+public class Receipt {
+	
+	private Person owner;
+	private BufferedImage image;
+	private Date boughtOn;
+	
+	public Receipt(Person owner, BufferedImage i, Date d) {
+		this.owner = owner;
+		this.image = i;
+		this.boughtOn = d;
+	}
+	
+	public Person getOwner() {
+		return this.owner;
+	}
+	
+	public void AddCrossOut(int x, int y) {
+		
+	}
+}

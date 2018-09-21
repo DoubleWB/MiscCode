@@ -1,0 +1,93 @@
+package resources;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import csp.*;
+
+public class Group {
+	private ArrayList<Person> people;
+	private ArrayList<Receipt> receipts;
+	private ArrayList<Item> noMansLand;
+	
+	public Group() {
+		this.people = new ArrayList<Person>();
+		this.receipts = new ArrayList<Receipt>();
+		this.noMansLand = new ArrayList<Item>();
+	}
+	
+	public Group(ArrayList<Person> people, HashMap<Item, Person> outstandingItems) {
+		this.people = people;
+		//this.outstandingItems = outstandingItems;
+	}
+	
+	public void on_Finished(Item finished, Person finisher) {
+		for (Receipt r : this.receipts) {
+			if (r.getOwner().acceptItemBought(r, finished)) {
+				this.split(this.gatherConsumers(finished), finished, r.getOwner());
+				return;
+			}
+		}
+	}
+	
+	public void split(ArrayList<Person> consumers, Item i, Person owner) {
+		int percentage = (100 / people.size());
+		HashMap<Person, Integer> shares = new HashMap<Person, Integer>();
+		HashMap<Person, Integer> satisfactions = new HashMap<Person, Integer>();
+		for (Person p : people) {
+			shares.put(p, percentage);
+			satisfactions.put(p, 0);
+		}
+		double globalSatisfaction = 0;
+		int count = 0;
+		//while(globalSatisfaction < 150 && count < 3) {
+		for (Person p : people) {
+			satisfactions.put(p, p.rateSatisfaction(shares.get(p), i));
+		}
+		Agent solutionFinder = new Agent(new State(satisfactions, satisfactions));
+		shares = solutionFinder.optimalAssignments();
+		System.out.println(shares.size());
+		
+		for (Person p : shares.keySet()) {
+			p.addDebt(new Debt(owner, shares.get(p)*i.getPrice()));
+		}
+		//}
+	}
+	
+	public double getTotalSatisfaction(HashMap<Person, Double> satisfaction) {
+		return 0;
+	}
+	
+	public ArrayList<Person> gatherConsumers(Item i) {
+		ArrayList<Person> output = new ArrayList<Person>();
+		for (Person p : people) {
+			if (p.optIn(i)) {
+				output.add(p);
+			}
+		}
+		return output;
+	}
+	
+	public void addReceipt(Receipt r) {
+		this.receipts.add(r);
+	}
+	
+	// add to arrayList
+	public void addPerson(Person person) {
+		this.people.add(person);
+	}
+	
+	// remove from arrayList
+	public void removePerson(Person person) {
+		this.people.remove(person);
+	}
+	
+	/*// add to HashMap
+	void addtoMap(Item item, Person person) {
+		this.outstandingItems.put(item, person);
+	}
+	
+	// remove from HashMap
+	void removeFromMap(Item item) {
+		this.outstandingItems.remove(item);
+	}*/
+}

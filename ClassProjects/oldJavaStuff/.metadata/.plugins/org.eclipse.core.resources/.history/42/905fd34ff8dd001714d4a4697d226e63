@@ -1,0 +1,60 @@
+package learning;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import State.Point2d;
+import State.SimpleState;
+import main.SimpleEmissionModel;
+import main.SimpleHMM;
+import main.SimpleModel;
+import main.SimpleTransitionModel;
+
+public class UnknownLearner {
+	
+	private SimpleModel testerModel;
+	private SimpleHMM tester;
+	private ArrayList<ArrayList<Point2d>> pathSet;
+	private HashMap<SimpleState, HashMap<Point2d, Double>> tProbabilities;
+	private HashMap<SimpleState, HashMap<Point2d, Double>> eProbabilities;
+	private HashMap<Integer, HashMap<SimpleState, Double>> forwardAlgo;
+	private HashMap<Integer, HashMap<SimpleState, HashMap<Point2d, Double>>> backwardAlgo;
+	
+	public UnknownLearner(ArrayList<ArrayList<Point2d>> paths) {
+		testerModel = new SimpleModel();
+		tester = new SimpleHMM(testerModel, 1);
+		pathSet = paths;
+		forwardAlgo =  new HashMap<Integer, HashMap<SimpleState, Double>>();
+	}
+	
+	public void learnProbabilities () {
+		tProbabilities = new HashMap<SimpleState, HashMap<Point2d, Double>>();
+		eProbabilities = new HashMap<SimpleState, HashMap<Point2d, Double>>();
+		while (!converged()) {
+			HashMap<SimpleState, HashMap<Point2d, Integer>> transOccurances = new HashMap<SimpleState, HashMap<Point2d, Integer>>();
+			HashMap<SimpleState, HashMap<Point2d, Integer>> emOccurances = new HashMap<SimpleState, HashMap<Point2d, Integer>>();
+			HashMap<SimpleState, Integer> transStarts = new HashMap<SimpleState, Integer>();
+			HashMap<SimpleState, Integer> totalOccurances = new HashMap<SimpleState, Integer>();
+			for (int p = 0; p < pathSet.size(); ++p) {
+				testerModel.setTruePath(pathSet.get(p));
+				int timeStep = 0;
+				while (!testerModel.complete()) {
+					forwardAlgo.put(timeStep,tester.getCurDistro());
+					tester.advance();
+					timeStep++;
+				}
+				forwardAlgo.put(timeStep, tester.getCurDistro());
+			}
+		}
+	}
+	
+	public boolean converged() {
+		return true;
+	}
+	
+	public void disseminate() {
+		SimpleTransitionModel.setProbs(tProbabilities);
+		SimpleEmissionModel.setProbs(eProbabilities);
+	}
+	
+}

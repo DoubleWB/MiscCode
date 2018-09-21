@@ -1,0 +1,33 @@
+package resources;
+
+import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+
+public class Receipt {
+	
+	private Person owner;
+	private BufferedImage image;
+	private Date boughtOn;
+	private ArrayList<Integer> dividers;
+	
+	public Receipt(Person owner, BufferedImage i, Date d) {
+		this.owner = owner;
+		this.image = i;
+		this.boughtOn = d;
+	}
+	
+	public Person getOwner() {
+		return this.owner;
+	}
+	
+	public void findDividers() {
+		ArrayList<Integer> rowSums = new ArrayList<Integer>();
+		for(int row = 0; row < image.getHeight(); row++) {
+			int rowSum = 0;
+			for(int col = 0; col < image.getWidth(); col++) {
+				rowSum += image.getRGB(col, row);
+			}
+			rowSums.add(rowSum);
+		}
+	}
+}

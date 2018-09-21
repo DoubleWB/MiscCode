@@ -1,0 +1,25 @@
+package learning;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import State.Point2d;
+import State.SimpleState;
+import main.SimpleHMM;
+import main.SimpleModel;
+
+public class UnknownLearner {
+	
+	private SimpleModel testerModel;
+	private SimpleHMM tester;
+	private ArrayList<ArrayList<Point2d>> emissionSet;
+	private HashMap<SimpleState, HashMap<Point2d, Double>> tProbabilities;
+	private HashMap<SimpleState, HashMap<Point2d, Double>> eProbabilities;
+	
+	public UnknownLearner(ArrayList<ArrayList<Point2d>> e) {
+		testerModel = new SimpleModel();
+		tester = new SimpleHMM(testerModel, 1);
+		emissionSet = e;
+	}
+	
+}
